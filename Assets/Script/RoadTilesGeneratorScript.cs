@@ -76,7 +76,7 @@ public class RoadTilesGeneratorScript : MonoBehaviour
 	{
 		foreach(Transform child in transform)
 		{
-			Destroy(child);
+			Destroy(child.gameObject);
 		}
 
 		_isInited = true;
