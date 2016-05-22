@@ -1,33 +1,52 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerScript : MonoBehaviour {
+public class PlayerScript : MonoBehaviour
+{
 
 	public static float VisibleDistance = 5;
-
+	private Rigidbody _rigidBody;
 	[SerializeField] private float _speed = 2;
+	[SerializeField] private float _jumpPower = 2;
 	[SerializeField] InputController _inputController;
 
 	public RoadTilesGeneratorScript[] roads;
 	private int currentRoad = 1;
 
+	bool _grounded = true;
+
 	// Use this for initialization
-	void Start () {
+	void Start()
+	{
 		_inputController.PlayerInput = ProcessPlayerInput;	
+		_rigidBody = GetComponent<Rigidbody>();
 	}
 
 	// Update is called once per frame
-	void Update () {
+	void Update()
+	{
 		Vector3 dVector = transform.position + transform.forward * _speed * Time.deltaTime;
 		if (transform.position.z != roads[currentRoad].transform.position.z)
 		{
-			Vector3 sideOffset = roads[currentRoad].transform.position - transform.position;
+			Vector3 sideOffset = new Vector3(transform.position.x, transform.position.y, roads[currentRoad].transform.position.z) - transform.position;
 
-			//dVector = new Vector3(dVector.x, dVector.y, roads[currentRoad].transform.position.z);
-			dVector = new Vector3(dVector.x, dVector.y, (transform.position + sideOffset.normalized).z);
+			if (sideOffset.magnitude < 0.1f)
+			{
+				transform.position = new Vector3(transform.position.x, transform.position.y, roads[currentRoad].transform.position.z);
+			}
+			else
+			{
+				dVector = new Vector3(dVector.x, dVector.y, (transform.position + sideOffset.normalized * Time.deltaTime*_speed).z);
+				transform.position = Vector3.Lerp(transform.position, dVector, Time.deltaTime);
+			}
 		}
-
+			
 		transform.position = dVector;
+	}
+
+	public void OnCollisionStay(Collision collisionInfo)
+	{
+		_grounded = true;
 	}
 
 	void ProcessPlayerInput(InputController.Gestures obj)
@@ -41,6 +60,7 @@ public class PlayerScript : MonoBehaviour {
 				MovePlayer(false);
 				break;
 			case InputController.Gestures.DragUp:
+				Jump();
 				break;
 			default:
 				break;
@@ -63,6 +83,16 @@ public class PlayerScript : MonoBehaviour {
 			{
 				currentRoad++;
 			}
+		}
+	}
+
+	public void Jump()
+	{
+		if (_grounded)
+		{
+			transform.position += transform.up * 0.1f;
+			_grounded = false;
+			_rigidBody.AddForce(transform.up * _jumpPower * 130);
 		}
 	}
 }
