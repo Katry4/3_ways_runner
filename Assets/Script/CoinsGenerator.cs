@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ObstacleGenerator : MonoBehaviour {
+public class CoinsGenerator : MonoBehaviour {
 
-	public GameObject obstaclePrefab;
+	public GameObject coinsPrefab;
 	private int _nextRoadIndex = 99;
 	private int _nextGeneration = 0;
 
@@ -12,7 +12,7 @@ public class ObstacleGenerator : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		SimplePool.Preload(obstaclePrefab, 3);
+		SimplePool.Preload(coinsPrefab, 3);
 		UpdateNextIndexes();
 	}
 
@@ -23,9 +23,13 @@ public class ObstacleGenerator : MonoBehaviour {
 		{
 			if (roadIndex == _nextRoadIndex)
 			{
-				GameObject obstacle = SimplePool.Spawn(obstaclePrefab, obstaclePrefab.transform.position, obstaclePrefab.transform.rotation);
+				if (tile.childCount == 1)
+				{
+					tile = tile.GetChild(0);
+				}
+				GameObject obstacle = SimplePool.Spawn(coinsPrefab, coinsPrefab.transform.position, coinsPrefab.transform.rotation);
 				obstacle.transform.parent = tile;
-				obstacle.transform.localPosition = obstaclePrefab.transform.localPosition;
+				obstacle.transform.localPosition = coinsPrefab.transform.localPosition;
 				UpdateNextIndexes();
 			}
 		}

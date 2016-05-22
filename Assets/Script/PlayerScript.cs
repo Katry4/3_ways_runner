@@ -9,6 +9,7 @@ public class PlayerScript : MonoBehaviour
 	[SerializeField] private float _speed = 2;
 	[SerializeField] private float _jumpPower = 2;
 	[SerializeField] InputController _inputController;
+	private GameManager _gameManager;
 
 	public RoadTilesGeneratorScript[] roads;
 	private int currentRoad = 1;
@@ -20,6 +21,7 @@ public class PlayerScript : MonoBehaviour
 	{
 		_inputController.PlayerInput = ProcessPlayerInput;	
 		_rigidBody = GetComponent<Rigidbody>();
+		_gameManager = FindObjectOfType<GameManager>();
 	}
 
 	// Update is called once per frame
@@ -36,7 +38,7 @@ public class PlayerScript : MonoBehaviour
 			}
 			else
 			{
-				dVector = new Vector3(dVector.x, dVector.y, (transform.position + sideOffset.normalized * Time.deltaTime*_speed).z);
+				dVector = new Vector3(dVector.x, dVector.y, (transform.position + sideOffset.normalized * Time.deltaTime * _speed).z);
 				transform.position = Vector3.Lerp(transform.position, dVector, Time.deltaTime);
 			}
 		}
@@ -102,6 +104,16 @@ public class PlayerScript : MonoBehaviour
 		if (collider.gameObject.tag == "Obstacle")
 		{
 			Debug.Log("GameOver!!");
+		}
+		
+	}
+
+	protected void OnTriggerEnter(Collider col){
+		if (col.gameObject.tag == "Coin")
+		{
+			_gameManager.AddPoints(20);
+			col.gameObject.transform.parent = null;
+			SimplePool.Despawn(col.gameObject);
 		}
 	}
 }
