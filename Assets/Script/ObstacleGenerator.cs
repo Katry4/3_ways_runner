@@ -19,7 +19,6 @@ public class ObstacleGenerator : MonoBehaviour {
 
 	public void TryToAddObstacle(GameObject tile, int roadIndex, int generation)
 	{
-		Debug.Log("road index "+roadIndex+ " gen "+generation);
 		if (generation > _nextGeneration)
 		{
 			if (roadIndex == _nextRoadIndex)
@@ -36,7 +35,6 @@ public class ObstacleGenerator : MonoBehaviour {
 	{
 		_nextRoadIndex = getNextRoadIndex(_nextRoadIndex);
 		_nextGeneration += Random.Range(obstacleMinStep, obstacleMaxStep);
-		Debug.Log("next "+_nextGeneration+"  "+_nextRoadIndex);
 	}
 
 	public int getNextRoadIndex(int currentIndex)

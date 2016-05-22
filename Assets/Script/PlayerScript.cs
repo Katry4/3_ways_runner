@@ -95,4 +95,13 @@ public class PlayerScript : MonoBehaviour
 			_rigidBody.AddForce(transform.up * _jumpPower * 130);
 		}
 	}
+
+
+	protected void OnCollisionEnter(Collision collider)
+	{
+		if (collider.gameObject.tag == "Obstacle")
+		{
+			Debug.Log("GameOver!!");
+		}
+	}
 }
