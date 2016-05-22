@@ -3,13 +3,15 @@ using System.Collections;
 
 public class RoadTilesGeneratorScript : MonoBehaviour
 {
-
+	[SerializeField] private int _roadIndex;
 	[SerializeField] private GameObject roadTilePref;
+	[SerializeField] private ObstacleGenerator _obstacleGenerator;
 	private Vector3 tileSize;
 	private Transform lastTile;
 	[SerializeField] private PlayerScript _player;
 
 	bool _isInited = false;
+	private int _tileGeneration = 0;
 
 	// Use this for initialization
 	void OnEnable()
@@ -64,11 +66,19 @@ public class RoadTilesGeneratorScript : MonoBehaviour
 		GameObject tile = SimplePool.Spawn(roadTilePref, nextPos, roadTilePref.transform.rotation);
 		lastTile = tile.transform;
 		lastTile.parent = transform;
+		_obstacleGenerator.TryToAddObstacle(lastTile.gameObject, _roadIndex ,_tileGeneration++);
 	}
 
 	void DespawnTile(Transform firstTile)
 	{
 		firstTile.parent = null;
+		if (firstTile.childCount > 0)
+		{
+			foreach (Transform child in firstTile)
+			{
+				SimplePool.Despawn(child.gameObject);
+			}
+		}
 		SimplePool.Despawn(firstTile.gameObject);
 	}
 
