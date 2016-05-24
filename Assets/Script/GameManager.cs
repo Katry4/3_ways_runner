@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
 	[Header("GamePlay Balance")]
 	[Header("Player")]
 	[SerializeField] private float _playerSpeed = 1f;
+	private float _startDefaultPlayerSpeed;
 	[SerializeField] private float _playerJumpPower = 1f;
 
 	[Header("Coin")]
@@ -28,6 +29,17 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private float _invncblDurationInSec = 4f;
 
 
+	[Header("Game Progress")]
+	private int currentLevel = 0;
+	[SerializeField] private int _levelDuration = 30;
+
+	PlayerScript player;
+	void OnEnable()
+	{
+		currentLevel = 0;
+		player = FindObjectOfType<PlayerScript>();
+
+	}
 
 	// Update is called once per frame
 	void Update()
@@ -35,11 +47,23 @@ public class GameManager : MonoBehaviour
 		_currentTime += Time.deltaTime;
 		UpdateUI();
 
+		if ((int)(_currentTime / _levelDuration) > currentLevel)
+		{
+			LevelUp();
+		}
+
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{ 
 			GameOver();
-
 		}
+	}
+
+	private void LevelUp()
+	{
+		currentLevel++;
+		_playerSpeed++;
+		_boostMaxSpeed++;
+		player.UpdateSpeed();
 	}
 
 	public void AddPoints(int points)
@@ -51,9 +75,12 @@ public class GameManager : MonoBehaviour
 	{
 		scoreText.text = _currentScore.ToString();
 
+
 		int minutes = (int)_currentTime / 60;
 		int seconds = (int)(_currentTime - (minutes * 60));
 		timeText.text = minutes.ToString("00") + ":" + seconds.ToString("00");
+
+
 	}
 
 	public void GameOver()

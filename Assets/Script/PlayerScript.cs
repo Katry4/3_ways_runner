@@ -7,9 +7,7 @@ public class PlayerScript : MonoBehaviour
 
 	public static float VisibleDistance = 5;
 	private Rigidbody _rigidBody;
-	private float _defaultSpeed;
 	private float _speed = 0;
-	private float _jumpPower;
 	[SerializeField] InputController _inputController;
 	private GameManager _gameManager;
 
@@ -28,9 +26,8 @@ public class PlayerScript : MonoBehaviour
 		_inputController.PlayerInput = ProcessPlayerInput;	
 		_rigidBody = GetComponent<Rigidbody>();
 		_gameManager = FindObjectOfType<GameManager>();
-		_defaultSpeed = _gameManager.PlayerDefaultSpeed;
-		_speed = _defaultSpeed;
-		_jumpPower = _gameManager.PlayerJumpPower;
+
+		_speed = _gameManager.PlayerDefaultSpeed;
 
 		_meshRenderer = GetComponent<MeshRenderer>();
 		defaultPlayerMaterial = _meshRenderer.material;
@@ -56,6 +53,15 @@ public class PlayerScript : MonoBehaviour
 		}
 			
 		transform.position = dVector;
+	}
+
+
+	public void UpdateSpeed()
+	{
+		if (lastBoostCourotine == null)
+		{
+			_speed = _gameManager.PlayerDefaultSpeed;
+		}
 	}
 
 	public void OnCollisionStay(Collision collisionInfo)
@@ -106,7 +112,7 @@ public class PlayerScript : MonoBehaviour
 		{
 			transform.position += transform.up * 0.1f;
 			_grounded = false;
-			_rigidBody.AddForce(transform.up * _jumpPower * 130);
+			_rigidBody.AddForce(transform.up * _gameManager.PlayerJumpPower * 130);
 		}
 	}
 
@@ -155,7 +161,7 @@ public class PlayerScript : MonoBehaviour
 		if (lastBoostCourotine != null)
 			StopCoroutine(lastBoostCourotine);
 
-		float step = (targetSpeed - _defaultSpeed) / 20; 
+		float step = (targetSpeed - _gameManager.PlayerDefaultSpeed) / 20; 
 		while (_speed < targetSpeed)
 		{
 			_speed += step;
@@ -167,14 +173,15 @@ public class PlayerScript : MonoBehaviour
 		yield return new WaitForSeconds(duration);
 
 
-		while (_speed > _defaultSpeed)
+		while (_speed > _gameManager.PlayerDefaultSpeed)
 		{
 			_speed -= step;
 			yield return 0;
 		}
 
+		lastBoostCourotine = null;
 		//_meshRenderer.material = defaultPlayerMaterial;
-		_speed = _defaultSpeed;
+		_speed = _gameManager.PlayerDefaultSpeed;
 	}
 
 	private void BecameInvincible()
@@ -196,6 +203,6 @@ public class PlayerScript : MonoBehaviour
 
 		gameObject.layer = LayerMask.NameToLayer("Player");
 		_meshRenderer.material = defaultPlayerMaterial;
-		_speed = _defaultSpeed;
+		_speed = _gameManager.PlayerDefaultSpeed;
 	}
 }

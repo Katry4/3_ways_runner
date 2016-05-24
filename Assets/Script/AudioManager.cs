@@ -43,7 +43,6 @@ public class AudioManager : MonoBehaviour
 
 	public void SetVolume(float volume)
 	{
-		Debug.Log(mixer + " to volume "+volume);
 		mixer.SetFloat(IDs.PlayerSettings.volume, mixerMinVolume + (mixerMaxVolume - mixerMinVolume) * volume);
 	}
 
