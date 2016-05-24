@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using System;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -33,6 +34,12 @@ public class GameManager : MonoBehaviour
 	{
 		_currentTime += Time.deltaTime;
 		UpdateUI();
+
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{ 
+			GameOver();
+
+		}
 	}
 
 	public void AddPoints(int points)
@@ -47,6 +54,29 @@ public class GameManager : MonoBehaviour
 		int minutes = (int)_currentTime / 60;
 		int seconds = (int)(_currentTime - (minutes * 60));
 		timeText.text = minutes.ToString("00") + ":" + seconds.ToString("00");
+	}
+
+	public void GameOver()
+	{
+
+		Debug.Log("GameOver!!");
+
+
+		int score = PlayerPrefs.GetInt(IDs.PlayerSettings.score, 0);
+		if (_currentScore > score)
+		{
+			PlayerPrefs.SetInt(IDs.PlayerSettings.score, _currentScore);
+		}
+
+		float time = PlayerPrefs.GetFloat(IDs.PlayerSettings.time, 0);
+		if (_currentTime > time)
+		{
+			PlayerPrefs.SetFloat(IDs.PlayerSettings.time, _currentTime);
+		}
+
+
+		AudioManager.Instance.PlayGameOverSound();
+		SceneManager.LoadScene("MainMenu");
 	}
 
 	#region Player balance

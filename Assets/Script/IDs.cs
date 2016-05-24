@@ -11,4 +11,12 @@ public class IDs {
 		public const string boostPowerUp = "BoostPowerUp";
 		public const string invinciblePowerUp = "InvinciblePowerUp";
 	}
+
+	public struct PlayerSettings
+	{
+		public const string score = "Score";
+		public const string time = "Time";
+
+		public const string volume = "Volume";
+	}
 }

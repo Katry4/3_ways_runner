@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -114,7 +115,7 @@ public class PlayerScript : MonoBehaviour
 	{
 		if (collider.gameObject.tag == "Obstacle")
 		{
-			Debug.Log("GameOver!!");
+			_gameManager.GameOver();
 		}
 		
 	}
@@ -123,14 +124,17 @@ public class PlayerScript : MonoBehaviour
 	{
 		if (col.gameObject.tag == "Coin")
 		{
+			AudioManager.Instance.PlayCoinSound();
 			_gameManager.AddPoints(_gameManager.ScorePerCoin);
 		}
 		else if (col.gameObject.tag == "SpeedPowerUp")
 		{
+			AudioManager.Instance.PlayPowerUpSound();
 			SpeedUp();
 		}
 		else if (col.gameObject.tag == "InvinciblePowerUp")
 		{
+			AudioManager.Instance.PlayPowerUpSound();
 			BecameInvincible();
 		}
 
