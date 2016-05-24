@@ -5,8 +5,7 @@ public class RoadTilesGeneratorScript : MonoBehaviour
 {
 	[SerializeField] private int _roadIndex;
 	[SerializeField] private GameObject roadTilePref;
-	[SerializeField] private ObstacleGenerator _obstacleGenerator;
-	[SerializeField] private CoinsGenerator _coinsGenerator;
+	[SerializeField] private ItemsGeneratorManager _generatorManager;
 	private Vector3 tileSize;
 	private Transform lastTile;
 	[SerializeField] private PlayerScript _player;
@@ -67,30 +66,31 @@ public class RoadTilesGeneratorScript : MonoBehaviour
 		GameObject tile = SimplePool.Spawn(roadTilePref, nextPos, roadTilePref.transform.rotation);
 		lastTile = tile.transform;
 		lastTile.parent = transform;
-		_obstacleGenerator.TryToAddObstacle(lastTile, _roadIndex ,_tileGeneration);
-		_coinsGenerator.TryToAddObstacle(lastTile, _roadIndex ,_tileGeneration++);
+		
+		_generatorManager.TryToAddObstacle(lastTile, _roadIndex, _tileGeneration++);
 	}
 
 	void DespawnTile(Transform firstTile)
 	{
 		firstTile.parent = null;
-		if (firstTile.childCount > 0)
+
+		foreach (Transform child in firstTile)
 		{
-			foreach (Transform child in firstTile)
+			foreach (Transform childChild in child)
 			{
-				foreach (Transform childChild in child)
-				{
-					SimplePool.Despawn(childChild.gameObject);
-				}
-				SimplePool.Despawn(child.gameObject);
+				childChild.parent = null;
+				SimplePool.Despawn(childChild.gameObject);
 			}
+			child.parent = null;
+			SimplePool.Despawn(child.gameObject);
 		}
+
 		SimplePool.Despawn(firstTile.gameObject);
 	}
 
 	private void ClearChildren()
 	{
-		foreach(Transform child in transform)
+		foreach (Transform child in transform)
 		{
 			Destroy(child.gameObject);
 		}

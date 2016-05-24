@@ -3,16 +3,10 @@ using System.Collections;
 
 public class CoinItem : MonoBehaviour
 {
-
-	// Use this for initialization
-	void Start()
-	{
-
-	}
-	
+	public float rotationSpeed = 70;
 	// Update is called once per frame
 	void Update()
 	{
-		transform.Rotate(Vector3.right * Time.deltaTime * 50);
+		transform.Rotate(Vector3.right * Time.deltaTime * rotationSpeed);
 	}
 }
