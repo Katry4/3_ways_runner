@@ -10,6 +10,7 @@ public class RoadTilesGeneratorScript : MonoBehaviour
 	private Transform lastTile;
 	[SerializeField] private PlayerScript _player;
 
+
 	bool _isInited = false;
 	private int _tileGeneration = 0;
 
@@ -43,7 +44,7 @@ public class RoadTilesGeneratorScript : MonoBehaviour
 	private void CheckDistanceToGenerateTile()
 	{
 		
-		if (lastTile == null || _player.transform.position.x + PlayerScript.VisibleDistance > lastTile.position.x)
+		if (lastTile == null || _player.transform.position.x + _player.VisibleDistance > lastTile.position.x)
 		{
 			SpawnTile();
 		}

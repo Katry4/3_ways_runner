@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class PlayerScript : MonoBehaviour
 {
 
-	public static float VisibleDistance = 5;
+	public float VisibleDistance = 10;
 	private Rigidbody _rigidBody;
 	private float _speed = 0;
 	[SerializeField] InputController _inputController;
